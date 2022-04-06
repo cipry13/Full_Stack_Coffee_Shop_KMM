@@ -2,42 +2,32 @@ import react.*
 import kotlinx.coroutines.*
 import react.dom.html.ReactHTML.h1
 import react.dom.html.ReactHTML.li
+import react.dom.html.ReactHTML.p
 import react.dom.html.ReactHTML.ul
 
 private val scope = MainScope()
 
 val App = FC<Props> {
-    var shoppingList by useState(emptyList<ShoppingListItem>())
+    var coffeeShopsList by useState(emptyList<CoffeeShop>())
 
     useEffectOnce {
         scope.launch {
-            shoppingList = getShoppingList()
+            coffeeShopsList = ApiClass().getData()
         }
     }
 
     h1 {
-        +"Full-Stack Shopping List"
+        +"Coffee Shops List"
     }
     ul {
-        shoppingList.sortedByDescending(ShoppingListItem::priority).forEach { item ->
+        coffeeShopsList.forEach { item ->
             li {
-                key = item.toString()
-                onClick = {
-                    scope.launch {
-                        deleteShoppingListItem(item)
-                        shoppingList = getShoppingList()
-                    }
+                p {
+                    +"${item.id}  ${item.name}"
                 }
-                +"[${item.priority}] ${item.desc} "
-            }
-        }
-    }
-    InputComponent {
-        onSubmit = { input ->
-            val cartItem = ShoppingListItem(input.replace("!", ""), input.count { it == '!' })
-            scope.launch {
-                addShoppingListItem(cartItem)
-                shoppingList = getShoppingList()
+                p {
+                    +"${item.x}  ${item.y}"
+                }
             }
         }
     }
